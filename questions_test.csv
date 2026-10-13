@@ -1,0 +1,61 @@
+﻿id,type,langue,question,reference
+1,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule gefitinib ?,C22H24ClFN4O3 ; 446.9 g/mol
+1,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of gefitinib?,C22H24ClFN4O3 ; 446.9 g/mol
+2,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule imatinib ?,C29H31N7O ; 493.6 g/mol
+2,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of imatinib?,C29H31N7O ; 493.6 g/mol
+3,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule erlotinib ?,C22H23N3O4 ; 393.4 g/mol
+3,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of erlotinib?,C22H23N3O4 ; 393.4 g/mol
+4,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule lapatinib ?,C29H26ClFN4O4S ; 581.1 g/mol
+4,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of lapatinib?,C29H26ClFN4O4S ; 581.1 g/mol
+5,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule aspirin ?,C9H8O4 ; 180.16 g/mol
+5,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of aspirin?,C9H8O4 ; 180.16 g/mol
+6,Formule / poids (PubChem),Français,Quelle est la formule chimique et le poids moléculaire de la molécule caffeine ?,C8H10N4O2 ; 194.19 g/mol
+6,Formule / poids (PubChem),Anglais,What are the molecular formula and the molecular weight of caffeine?,C8H10N4O2 ; 194.19 g/mol
+7,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine EGFR ?,CHEMBL203
+7,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein EGFR?,CHEMBL203
+8,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine VEGFR2 ?,CHEMBL279
+8,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein VEGFR2?,CHEMBL279
+9,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine CDK2 ?,CHEMBL301
+9,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein CDK2?,CHEMBL301
+10,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine BRAF ?,CHEMBL5145
+10,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein BRAF?,CHEMBL5145
+11,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine ABL1 ?,CHEMBL1862
+11,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein ABL1?,CHEMBL1862
+12,Identifiant de cible (ChEMBL),Français,Quel est l'identifiant ChEMBL de la protéine cible humaine ERBB2 ?,CHEMBL1824
+12,Identifiant de cible (ChEMBL),Anglais,What is the ChEMBL identifier of the human target protein ERBB2?,CHEMBL1824
+13,Identifiant de molécule (ChEMBL),Français,Quel est l'identifiant ChEMBL de la molécule gefitinib ?,CHEMBL939
+13,Identifiant de molécule (ChEMBL),Anglais,What is the ChEMBL identifier of the molecule gefitinib?,CHEMBL939
+14,Identifiant de molécule (ChEMBL),Français,Quel est l'identifiant ChEMBL de la molécule imatinib ?,CHEMBL941
+14,Identifiant de molécule (ChEMBL),Anglais,What is the ChEMBL identifier of the molecule imatinib?,CHEMBL941
+15,Identifiant de molécule (ChEMBL),Français,Quel est l'identifiant ChEMBL de la molécule erlotinib ?,CHEMBL553
+15,Identifiant de molécule (ChEMBL),Anglais,What is the ChEMBL identifier of the molecule erlotinib?,CHEMBL553
+16,Identifiant de molécule (ChEMBL),Français,Quel est l'identifiant ChEMBL de la molécule lapatinib ?,CHEMBL554
+16,Identifiant de molécule (ChEMBL),Anglais,What is the ChEMBL identifier of the molecule lapatinib?,CHEMBL554
+17,Identifiant de molécule (ChEMBL),Français,Quel est l'identifiant ChEMBL de la molécule sorafenib ?,CHEMBL1336
+17,Identifiant de molécule (ChEMBL),Anglais,What is the ChEMBL identifier of the molecule sorafenib?,CHEMBL1336
+18,Plusieurs étapes (ChEMBL),Français,Quels sont les 10 inhibiteurs les plus puissants (IC50 la plus basse) du récepteur EGFR dans ChEMBL ?,"CHEMBL176582, CHEMBL4650319, CHEMBL5270693 (IC50 = 0.01 nM) en tête"
+18,Plusieurs étapes (ChEMBL),Anglais,What are the 10 most potent inhibitors (lowest IC50) of the EGFR receptor in ChEMBL?,"CHEMBL176582, CHEMBL4650319, CHEMBL5270693 (IC50 = 0.01 nM) en tête"
+19,Plusieurs étapes (ChEMBL),Français,Combien de molécules ont été testées contre la protéine VEGFR2 dans ChEMBL ?,"17115 molécules distinctes (API ChEMBL, 2026-10-13)"
+19,Plusieurs étapes (ChEMBL),Anglais,How many molecules have been tested against the protein VEGFR2 in ChEMBL?,"17115 molécules distinctes (API ChEMBL, 2026-10-13)"
+20,Plusieurs étapes (ChEMBL),Français,Combien de molécules ont été testées contre la protéine EGFR dans ChEMBL ?,"19118 molécules distinctes (API ChEMBL, 2026-10-13)"
+20,Plusieurs étapes (ChEMBL),Anglais,How many molecules have been tested against the protein EGFR in ChEMBL?,"19118 molécules distinctes (API ChEMBL, 2026-10-13)"
+21,Plusieurs étapes (ChEMBL),Français,Quel est l'inhibiteur le plus puissant de la protéine EGFR dans ChEMBL selon la mesure Ki ?,"CHEMBL4100860 (Ki = 0.03 nM, API ChEMBL, 2026-10-13)"
+21,Plusieurs étapes (ChEMBL),Anglais,Which is the most potent inhibitor of the protein EGFR in ChEMBL according to the Ki measure?,"CHEMBL4100860 (Ki = 0.03 nM, API ChEMBL, 2026-10-13)"
+22,Plusieurs étapes (ChEMBL),Français,Quel est l'inhibiteur le plus puissant de la protéine CDK2 dans ChEMBL selon la mesure Ki ?,"CHEMBL4446357 (Ki = 0.09 nM, API ChEMBL, 2026-10-13)"
+22,Plusieurs étapes (ChEMBL),Anglais,Which is the most potent inhibitor of the protein CDK2 in ChEMBL according to the Ki measure?,"CHEMBL4446357 (Ki = 0.09 nM, API ChEMBL, 2026-10-13)"
+23,Recherche par SMILES (PubChem),Français,Cette molécule est-elle connue dans PubChem ? A-t-elle des activités biologiques rapportées ? Donne son identifiant CID. SMILES : COC1=C(C=C2C(=C1)N=CN=C2NC3=CC(=C(C=C3)F)Cl)OCCCN4CCOCC4,"Oui, CID 123631 (gefitinib)"
+23,Recherche par SMILES (PubChem),Anglais,Is this molecule known in PubChem? Does it have reported biological activities? Give its CID. SMILES: COC1=C(C=C2C(=C1)N=CN=C2NC3=CC(=C(C=C3)F)Cl)OCCCN4CCOCC4,"Oui, CID 123631 (gefitinib)"
+24,Recherche par SMILES (PubChem),Français,Cette molécule est-elle connue dans PubChem ? A-t-elle des activités biologiques rapportées ? Donne son identifiant CID. SMILES : CC(=O)OC1=CC=CC=C1C(=O)O,"Oui, CID 2244 (aspirin)"
+24,Recherche par SMILES (PubChem),Anglais,Is this molecule known in PubChem? Does it have reported biological activities? Give its CID. SMILES: CC(=O)OC1=CC=CC=C1C(=O)O,"Oui, CID 2244 (aspirin)"
+25,Recherche par SMILES (PubChem),Français,Cette molécule est-elle connue dans PubChem ? A-t-elle des activités biologiques rapportées ? Donne son identifiant CID. SMILES : CN1C=NC2=C1C(=O)N(C(=O)N2C)C,"Oui, CID 2519 (caffeine)"
+25,Recherche par SMILES (PubChem),Anglais,Is this molecule known in PubChem? Does it have reported biological activities? Give its CID. SMILES: CN1C=NC2=C1C(=O)N(C(=O)N2C)C,"Oui, CID 2519 (caffeine)"
+26,Recherche par SMILES (PubChem),Français,Cette molécule est-elle connue dans PubChem ? A-t-elle des activités biologiques rapportées ? Donne son identifiant CID. SMILES : CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5,"Oui, CID 5291 (imatinib)"
+26,Recherche par SMILES (PubChem),Anglais,Is this molecule known in PubChem? Does it have reported biological activities? Give its CID. SMILES: CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5,"Oui, CID 5291 (imatinib)"
+27,Sans réponse possible,Français,Quelle est l'IC50 de la molécule ZX-9999 sur l'EGFR dans ChEMBL ?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+27,Sans réponse possible,Anglais,What is the IC50 of the molecule ZX-9999 on EGFR in ChEMBL?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+28,Sans réponse possible,Français,Quelle est la formule chimique du composé zorbatinibexol ?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+28,Sans réponse possible,Anglais,What is the chemical formula of the compound zorbatinibexol?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+29,Sans réponse possible,Français,Quel est l'identifiant ChEMBL de la protéine QWERTY99 ?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+29,Sans réponse possible,Anglais,What is the ChEMBL identifier of the protein QWERTY99?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+30,Sans réponse possible,Français,Combien de molécules ont été testées contre la protéine ZZZ123 dans ChEMBL ?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
+30,Sans réponse possible,Anglais,How many molecules have been tested against the protein ZZZ123 in ChEMBL?,L'assistant doit dire qu'il ne trouve rien (ne rien inventer)
