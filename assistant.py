@@ -63,6 +63,7 @@ def molecule_par_smiles(smiles: str) -> str:
 OUTILS = [rechercher_cible_chembl, rechercher_molecule_chembl, activites_cible,
           fiche_molecule_pubchem, compter_activites, molecule_par_smiles]
 
+# ---------- Prompts en français (inchangés : ils ont produit les résultats français) ----------
 REGLE_LANGUE = """RÈGLE DE LANGUE (priorité absolue) / LANGUAGE RULE (top priority):
 Réponds TOUJOURS dans la langue de la question de l'utilisateur (français ou anglais).
 ALWAYS answer in the language of the user's question (French or English), even if the tool
@@ -100,6 +101,40 @@ Tu n'as accès à aucun outil ni à aucune base de données : réponds uniquemen
 N'invente jamais une valeur ou un identifiant : si tu n'es pas certain, dis clairement
 que tu ne sais pas."""
 
+# ---------- Prompts en anglais (mêmes règles, utilisés pour les questions en anglais) ----------
+REGLE_LANGUE_EN = """LANGUAGE RULE (top priority):
+The user writes in English. ALWAYS answer in English only, even if tool results contain
+French words: translate them instead of copying them."""
+
+PROMPT_AVEC_OUTILS_EN = REGLE_LANGUE_EN + """
+
+You are a scientific assistant for virtual screening.
+
+Rules:
+1. For any factual question about a molecule, a target or a biological activity, you MUST
+   use the tools. Never invent a value.
+2. Start with a short answer sentence, then give the values and the references.
+3. Copy the values EXACTLY as the tools return them, with their unit. Do not round them
+   and do not convert them.
+4. Add NO information that is not in the tool results: no comment, comparison,
+   interpretation or extra detail (for example a number of measurements per molecule).
+5. For each result, cite the database (ChEMBL or PubChem) and the identifiers used
+   (CHEMBL..., CID, assay, document). NEVER cite the name of an internal tool as a source.
+6. For a counting question, give the number of distinct molecules tested and state the
+   total number of activity measurements.
+7. For the activities of a target, use the requested measure type (IC50, Ki, Kd, EC50...).
+   If the question does not specify one, use IC50 and say so in your answer.
+8. If the question asks for information your tools cannot provide, say so clearly and do
+   not answer from memory.
+9. If the tools return nothing, say so clearly and do not guess."""
+
+PROMPT_SANS_OUTILS_EN = REGLE_LANGUE_EN + """
+
+You are a scientific assistant for virtual screening.
+You have no tool and no database: answer from memory only.
+Never invent a value or an identifier: if you are not certain, say clearly that you
+do not know."""
+
 # ---------- Détection de la langue de la question ----------
 MOTS_EN = {"the", "is", "are", "of", "what", "which", "how", "many", "have", "been", "has",
            "does", "this", "that", "in", "on", "give", "its", "known", "with", "for", "and",
@@ -108,10 +143,12 @@ MOTS_FR = {"le", "la", "les", "est", "sont", "de", "des", "du", "et", "pour", "a
            "quel", "quels", "quelles", "combien", "cette", "ont", "été", "dans", "sur", "un",
            "une", "donne", "son", "elle", "connue", "testées"}
 
+_INDICE = re.compile(r"\s*\((?:Answer in English\.|Réponds en français\.)\)\s*$")
+
 
 def detecter_langue(texte):
     """Renvoie 'en', 'fr', ou None si la langue n'est pas claire."""
-    mots = re.findall(r"[a-zàâçéèêëîïôûùüÿœ']+", texte.lower())
+    mots = re.findall(r"[a-zàâçéèêëîïôûùüÿœ']+", _INDICE.sub("", texte).lower())
     n_en = sum(m in MOTS_EN for m in mots)
     n_fr = sum(m in MOTS_FR for m in mots)
     if n_en > n_fr:
@@ -131,12 +168,41 @@ def avec_indice_langue(question):
     return question
 
 
+def _texte(message):
+    return message["content"] if isinstance(message, dict) else getattr(message, "content", "")
+
+
+class AgentBilingue:
+    """Deux agents identiques, un par langue : le prompt système est dans la langue de la question.
+
+    S'utilise comme un agent LangChain : agent.invoke({"messages": [...]}).
+    """
+
+    def __init__(self, agent_fr, agent_en):
+        self.agents = {"fr": agent_fr, "en": agent_en}
+        self.derniere_langue = None
+
+    def invoke(self, entree, *args, **kwargs):
+        langue = detecter_langue(_texte(entree["messages"][-1])) or "fr"
+        self.derniere_langue = langue
+        return self.agents[langue].invoke(entree, *args, **kwargs)
+
+
 def creer_agent():
-    """Assistant complet : LLM + 6 outils."""
+    """Assistant complet : LLM + 6 outils, avec un prompt système par langue."""
     llm = ChatGroq(model=MODELE, temperature=0)
-    return create_agent(model=llm, tools=OUTILS, system_prompt=PROMPT_AVEC_OUTILS)
+    return AgentBilingue(
+        create_agent(model=llm, tools=OUTILS, system_prompt=PROMPT_AVEC_OUTILS),
+        create_agent(model=llm, tools=OUTILS, system_prompt=PROMPT_AVEC_OUTILS_EN))
 
 
 def creer_llm_seul():
     """LLM seul, sans outils (condition de comparaison)."""
     return ChatGroq(model=MODELE, temperature=0)
+
+
+def repondre_sans_outils(llm, question):
+    """Réponse du LLM seul, avec le prompt (sans outils) de la langue de la question."""
+    langue = detecter_langue(question) or "fr"
+    prompt = PROMPT_SANS_OUTILS_EN if langue == "en" else PROMPT_SANS_OUTILS
+    return llm.invoke([("system", prompt), ("human", avec_indice_langue(question))]).content
