@@ -1,0 +1,30 @@
+[project]
+enable_telemetry = false
+user_env = []
+session_timeout = 3600
+
+[features]
+unsafe_allow_html = false
+latex = false
+
+[features.spontaneous_file_upload]
+enabled = false
+
+[UI]
+name = "ChemAsk"
+default_theme = "dark"
+cot = "full"
+confirm_new_chat = false
+custom_css = "/public/style.css"
+custom_js = "/public/molecules.js"
+default_avatar_file_url = "/public/avatars/assistant.png"
+
+[[UI.header_links]]
+name = "Dashboard"
+display_name = "Dashboard"
+icon_url = "/public/favicon.png"
+url = "/public/dashboard.html"
+target = "_self"
+
+[meta]
+generated_by = "2.0.0"

@@ -1,0 +1,96 @@
+/* ChemAsk : habillage par-dessus theme.json */
+body { font-feature-settings: "cv11", "ss01"; letter-spacing: -0.005em; }
+
+/* Écran d'accueil : visuel + titre centrés */
+#welcome-screen img { display: block; max-width: min(520px, 90vw); height: auto; margin: 0 auto;
+  background: transparent !important; border: 0 !important; box-shadow: none !important; }
+#welcome-screen .bg-muted { background: transparent !important; }
+#welcome-screen .md\:max-w-md { margin-left: auto; margin-right: auto; }
+#welcome-screen img.rounded-full { display: none; }
+#welcome-screen > div { margin-left: auto; margin-right: auto; }
+#welcome-screen > div > div { text-align: center; align-items: center; margin-left: auto; margin-right: auto; }
+#welcome-screen h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #14b8a6, #6366f1); -webkit-background-clip: text;
+  background-clip: text; color: transparent; text-align: center !important; margin: .2rem 0; }
+#welcome-screen p { text-align: center !important; max-width: 34rem; margin: 0 auto; opacity: .85; }
+
+/* Questions d'exemple : cartes */
+#welcome-screen button { border-radius: 14px !important; transition: transform .15s, box-shadow .15s, border-color .15s; }
+#welcome-screen button:hover { transform: translateY(-2px); border-color: #14b8a6 !important;
+  box-shadow: 0 8px 24px -10px rgba(20, 184, 166, .55); }
+
+/* Zone de saisie */
+#chat-input { font-size: 1rem; }
+form:has(#chat-input), div:has(> #chat-input) { border-radius: 18px; }
+
+/* Messages et étapes d'outils */
+.step { border-radius: 12px; }
+code, pre { font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace; }
+pre { border-radius: 10px; }
+
+/* Barre latérale (historique) */
+[data-sidebar="sidebar"] { backdrop-filter: blur(8px); }
+[data-sidebar="menu-button"] { border-radius: 10px; }
+
+/* Masque le badge "Built with Chainlit" */
+a.watermark, .watermark { display: none !important; }
+
+/* ============ Verre dépoli (glassmorphism) + survols animés ============ */
+body, main.bg-background { background: transparent !important; }
+#root { position: relative; z-index: 1; }
+
+/* Voile par-dessus la vidéo de fond (clair / sombre) */
+#fond-voile { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: rgba(255,255,255,.5); }
+html.dark #fond-voile { background: rgba(8,12,24,.55); }
+
+/* Barre latérale en verre */
+[data-sidebar="sidebar"] { background: rgba(255,255,255,.38) !important;
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); }
+html.dark [data-sidebar="sidebar"] { background: rgba(14,20,36,.45) !important; }
+[data-sidebar="menu-button"] { transition: transform .2s, background .2s; }
+[data-sidebar="menu-button"]:hover { transform: translateX(4px); background: rgba(20,184,166,.14) !important; }
+
+/* Zone de saisie : verre + lueur douce au survol / à la saisie */
+div.rounded-3xl:has(#chat-input) {
+  --mx: 50%; --my: 0%;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,.8), rgba(255,255,255,.45)) !important;
+  backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow: 0 10px 40px rgba(15,23,42,.14);
+  transition: box-shadow .25s, border-color .25s, transform .25s;
+}
+html.dark div.rounded-3xl:has(#chat-input) {
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(60,80,120,.55), rgba(20,28,45,.5)) !important;
+  border-color: rgba(255,255,255,.14);
+}
+div.rounded-3xl:has(#chat-input):hover { transform: translateY(-1px); border-color: rgba(45,212,191,.7);
+  box-shadow: 0 14px 44px rgba(13,148,136,.28); }
+div.rounded-3xl:has(#chat-input):focus-within { border-color: #2dd4bf;
+  box-shadow: 0 0 0 3px rgba(45,212,191,.22), 0 14px 44px rgba(13,148,136,.3); }
+#chat-input { background: transparent !important; }
+
+/* Boutons d'exemple : verre + soulèvement + lueur */
+#welcome-screen button:not(#chat-submit) {
+  --mx: 50%; --my: 50%;
+  background: radial-gradient(160px circle at var(--mx) var(--my), rgba(255,255,255,.85), rgba(255,255,255,.45)) !important;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.7) !important;
+  box-shadow: 0 4px 16px rgba(15,23,42,.1);
+  transition: transform .2s, box-shadow .2s, border-color .2s !important;
+}
+html.dark #welcome-screen button:not(#chat-submit) {
+  background: radial-gradient(160px circle at var(--mx) var(--my), rgba(70,95,140,.55), rgba(20,28,45,.5)) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+#welcome-screen button:not(#chat-submit):hover { transform: translateY(-3px) scale(1.03); border-color: #2dd4bf !important;
+  box-shadow: 0 12px 30px -8px rgba(13,148,136,.55); }
+#welcome-screen button:not(#chat-submit):active { transform: translateY(0) scale(.99); }
+
+/* Bouton d'envoi, Dashboard */
+#chat-submit { transition: transform .2s, box-shadow .2s; }
+#chat-submit:hover { transform: scale(1.12); box-shadow: 0 0 0 4px rgba(45,212,191,.25); }
+a[href*="dashboard"] { transition: transform .2s, box-shadow .2s; border-radius: 10px; }
+a[href*="dashboard"]:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,148,136,.3); }
+
+/* Messages et blocs de code en verre léger */
+.step, pre { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }

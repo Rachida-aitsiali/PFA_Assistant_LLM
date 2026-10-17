@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChemAsk · Dashboard</title>
+<link rel="icon" href="/public/favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root[data-theme="dark"]  { --bg:#0b1220; --card:#111a2e; --bd:#1f2b45; --tx:#e6edf7; --mut:#8fa0bd; --grid:#1f2b45; --grey:#64748b; }
+  :root[data-theme="light"] { --bg:#f3f6fb; --card:#ffffff; --bd:#dbe3ee; --tx:#0f172a; --mut:#5b6b85; --grid:#e5ebf3; --grey:#94a3b8; }
+  :root { --teal:#14b8a6; --indigo:#6366f1; --amber:#eab308; --red:#ef4444; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--tx); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.45; }
+  header { position:sticky; top:0; z-index:10; display:flex; gap:18px; align-items:center; padding:12px 28px; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--bd); }
+  header h1 { margin:0; font-size:18px; display:flex; gap:10px; align-items:center; white-space:nowrap; }
+  header h1 img { width:28px; height:28px; }
+  nav { display:flex; gap:4px; flex:1; flex-wrap:wrap; }
+  nav a { color:var(--mut); text-decoration:none; font-size:14px; padding:6px 12px; border-radius:8px; }
+  nav a:hover { color:var(--tx); background:var(--card); }
+  .tools { display:flex; gap:8px; align-items:center; }
+  .seg { display:flex; border:1px solid var(--bd); border-radius:9px; overflow:hidden; }
+  .seg button, .ico { background:var(--card); color:var(--mut); border:0; padding:6px 11px; font-size:13px; cursor:pointer; font-weight:600; }
+  .seg button.on { background:var(--teal); color:#06231f; }
+  .ico { border:1px solid var(--bd); border-radius:9px; font-size:15px; }
+  a.btn { color:#06231f; background:var(--teal); text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:700; font-size:13px; white-space:nowrap; }
+  main { max-width:1180px; margin:0 auto; padding:26px 22px 70px; }
+  section { margin-top:34px; scroll-margin-top:70px; }
+  section > h2 { font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--mut); margin:0 0 14px; font-weight:700; }
+  .grid { display:grid; gap:14px; }
+  .kpis { grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:14px; padding:18px; }
+  .kpi small { color:var(--mut); font-size:12px; }
+  .kpi b { display:block; font-size:30px; margin:4px 0 0; letter-spacing:-.02em; }
+  .kpi .sub { color:var(--mut); font-size:12px; }
+  .teal { color:var(--teal); } .indigo { color:var(--indigo); } .grey { color:var(--grey); }
+  h3 { margin:0 0 12px; font-size:15px; }
+  .c2 { grid-template-columns:1.5fr 1fr; } .c3 { grid-template-columns:repeat(3,1fr); } .c2e { grid-template-columns:1fr 1fr; }
+  @media (max-width:900px) { .c2,.c3,.c2e { grid-template-columns:1fr; } nav { display:none; } }
+  .chart { position:relative; height:250px; }
+  .note { color:var(--mut); font-size:12.5px; margin:12px 0 0; }
+  .empty { color:var(--mut); font-size:14px; padding:30px 0; text-align:center; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; color:var(--mut); font-weight:600; font-size:12px; padding:8px 10px; border-bottom:1px solid var(--bd); }
+  td { padding:10px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  tr:last-child td { border:0; }
+  code { color:var(--teal); font-size:12.5px; }
+  .tag { display:inline-block; font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:99px; }
+  .tag.chembl { background:color-mix(in srgb,var(--teal) 18%,transparent); color:var(--teal); }
+  .tag.pubchem { background:color-mix(in srgb,var(--indigo) 20%,transparent); color:var(--indigo); }
+  .tag.ok { background:color-mix(in srgb,var(--teal) 18%,transparent); color:var(--teal); }
+  .tag.wip { background:color-mix(in srgb,var(--amber) 22%,transparent); color:var(--amber); }
+  .issue { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--bd); }
+  .issue:last-child { border:0; }
+  .issue .tag { align-self:flex-start; white-space:nowrap; flex:none; }
+  .issue p { margin:2px 0 0; color:var(--mut); font-size:13.5px; }
+  .flow { display:flex; flex-wrap:wrap; gap:10px; align-items:stretch; }
+  .step { flex:1 1 150px; background:var(--bg); border:1px solid var(--bd); border-radius:12px; padding:14px; }
+  .step b { display:block; font-size:13px; margin-bottom:3px; }
+  .step span { color:var(--mut); font-size:12.5px; }
+  .arrow { align-self:center; color:var(--teal); font-size:20px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chips span { background:var(--bg); border:1px solid var(--bd); border-radius:99px; padding:6px 13px; font-size:13px; }
+  img.fig { width:100%; border-radius:10px; background:#fff; }
+  footer { text-align:center; color:var(--mut); font-size:12px; margin-top:40px; }
+</style>
+<style>
+  /* ===== Effet « wow » : vidéo, verre dépoli, animations ===== */
+  html { background:var(--bg); }
+  body { background:transparent; }
+  #fond-video { position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; pointer-events:none;
+    filter:blur(2px) saturate(.9); transform:scale(1.05); }
+  #fond-voile { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  :root[data-theme="dark"] #fond-voile { background:rgba(8,12,24,.62); }
+  :root[data-theme="light"] #fond-voile { background:rgba(255,255,255,.55); }
+  main, footer { position:relative; z-index:1; }
+  header { background:color-mix(in srgb,var(--bg) 55%,transparent); backdrop-filter:blur(18px) saturate(1.4); }
+
+  .card { --mx:50%; --my:0%; position:relative; overflow:hidden;
+    background:radial-gradient(380px circle at var(--mx) var(--my), color-mix(in srgb,var(--card) 78%,transparent), color-mix(in srgb,var(--card) 48%,transparent));
+    backdrop-filter:blur(18px) saturate(1.5); -webkit-backdrop-filter:blur(18px) saturate(1.5);
+    border:1px solid color-mix(in srgb,var(--tx) 14%,transparent);
+    transition:transform .25s ease-out, box-shadow .25s, border-color .25s; }
+  .card:hover { transform:translateY(-4px); border-color:rgba(45,212,191,.7);
+    box-shadow:0 16px 44px -10px rgba(13,148,136,.45); }
+  .card:before { content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px; pointer-events:none; opacity:0;
+    background:conic-gradient(from var(--a,0deg), transparent 0 55%, #2dd4bf 70%, #38bdf8 85%, #6366f1 95%, transparent);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    animation:spin 4s linear infinite; transition:opacity .3s; }
+  .card:hover:before { opacity:1; }
+  @property --a { syntax:'<angle>'; initial-value:0deg; inherits:false; }
+  @keyframes spin { to { --a:360deg; } }
+
+  .kpi b { font-size:34px; background:linear-gradient(90deg,currentColor,color-mix(in srgb,currentColor 60%,#38bdf8)); -webkit-background-clip:text; background-clip:text; }
+  .step, .chips span { background:color-mix(in srgb,var(--card) 50%,transparent); transition:transform .2s, border-color .2s, box-shadow .2s; }
+  .step:hover, .chips span:hover { transform:translateY(-3px); border-color:var(--teal); box-shadow:0 8px 20px -8px rgba(13,148,136,.5); }
+  tr { transition:background .2s; } tr:hover td { background:color-mix(in srgb,var(--teal) 9%,transparent); }
+  nav a { transition:transform .2s, background .2s, color .2s; } nav a:hover { transform:translateY(-2px); }
+  .seg button, .ico, a.btn { transition:transform .2s, box-shadow .2s, background .2s; }
+  .seg button:hover, .ico:hover, a.btn:hover { transform:translateY(-2px); box-shadow:0 8px 18px -6px rgba(13,148,136,.55); }
+  header h1 { background:linear-gradient(90deg,var(--teal),var(--indigo)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  header h1 img { animation:flottement 4s ease-in-out infinite; }
+  @keyframes flottement { 50% { transform:translateY(-3px) rotate(6deg); } }
+
+  /* apparition en cascade */
+  .rev { opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+  .rev.vu { opacity:1; transform:none; }
+  .rev.vu:hover { transform:translateY(-4px); }
+</style>
+</head>
+<body>
+<header>
+  <h1><img src="/public/favicon.png" alt=""> ChemAsk</h1>
+  <nav>
+    <a href="#eval" data-i="nav_eval">Évaluation</a>
+    <a href="#usage" data-i="nav_usage">Usage</a>
+    <a href="#outils" data-i="nav_tools">Outils</a>
+    <a href="#archi" data-i="nav_archi">Architecture</a>
+  </nav>
+  <div class="tools">
+    <div class="seg"><button id="fr">FR</button><button id="en">EN</button></div>
+    <button class="ico" id="theme" title="Thème / Theme">☾ / ☀</button>
+    <a class="btn" href="/" data-i="back">← Assistant</a>
+  </div>
+</header>
+
+<main>
+  <div class="grid kpis">
+    <div class="card kpi"><small data-i="k_tools">Précision avec outils</small><b class="teal">96,7 %</b><span class="sub">58 / 60</span></div>
+    <div class="card kpi"><small data-i="k_alone">Précision LLM seul</small><b class="grey">41,7 %</b><span class="sub">25 / 60</span></div>
+    <div class="card kpi"><small data-i="k_gain">Gain apporté par les outils</small><b class="indigo">+55 pts</b><span class="sub">× 2,3</span></div>
+    <div class="card kpi"><small data-i="k_conv">Conversations</small><b id="k-conv">–</b><span class="sub" data-i="live">en direct</span></div>
+    <div class="card kpi"><small data-i="k_q">Questions posées</small><b id="k-q">–</b><span class="sub" data-i="live">en direct</span></div>
+    <div class="card kpi"><small data-i="k_lat">Temps de réponse moyen</small><b id="k-lat">–</b><span class="sub" data-i="live">en direct</span></div>
+  </div>
+
+  <section id="eval">
+    <h2 data-i="h_eval">Évaluation : LLM seul vs LLM + outils</h2>
+    <div class="grid c2">
+      <div class="card"><h3 data-i="t_bar">Réponses correctes sur 60 énoncés</h3>
+        <div class="chart"><canvas id="c-eval"></canvas></div>
+        <p class="note" data-i="n_eval">Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Après correction de la notation, le score attendu avec outils est de 59/60 (à confirmer).</p></div>
+      <div class="card"><h3 data-i="t_gauge">Taux de réussite</h3>
+        <div class="chart"><canvas id="c-gauge"></canvas></div></div>
+    </div>
+    <div class="grid c2e" style="margin-top:14px">
+      <div class="card"><h3 data-i="t_issues">Analyse des erreurs</h3>
+        <div class="issue"><span class="tag ok" data-i="s_fixed">Corrigé</span><div><b data-i="i1t">Réponses anglaises sorties en français</b><p data-i="i1d">Prompts séparés par langue et consigne de langue ajoutée à chaque question.</p></div></div>
+        <div class="issue"><span class="tag ok" data-i="s_scoring">Notation corrigée</span><div><b data-i="i2t">Réponse jugée fausse à tort</b><p data-i="i2d">L'assistant donnait le nom EBVACICLIB au lieu de l'identifiant CHEMBL4446357 : la réponse était correcte.</p></div></div>
+        <div class="issue"><span class="tag wip" data-i="s_open">Ouvert</span><div><b data-i="i3t">Une vraie erreur</b><p data-i="i3d">Le modèle a écrit un nombre de molécules en toutes lettres de façon erronée alors que l'outil donnait le bon chiffre.</p></div></div>
+      </div>
+      <div class="card"><h3 data-i="t_type">Résultats par type de question</h3>
+        <img class="fig" src="/public/resultats_par_type.png" alt="" onerror="this.outerHTML='<p class=empty data-i=no_fig></p>';applyLang()">
+      </div>
+    </div>
+  </section>
+
+  <section id="usage">
+    <h2 data-i="h_usage">Usage de l'application</h2>
+    <div id="no-stats" class="card empty" style="display:none" data-i="no_stats">Aucune donnée d'usage pour l'instant : posez une question à l'assistant.</div>
+    <div id="usage-grid">
+      <div class="grid c2">
+        <div class="card"><h3 data-i="t_days">Questions par jour (14 jours)</h3><div class="chart"><canvas id="c-days"></canvas></div></div>
+        <div class="card"><h3 data-i="t_bases">Bases interrogées</h3><div class="chart"><canvas id="c-bases"></canvas></div></div>
+      </div>
+      <div class="grid c2e" style="margin-top:14px">
+        <div class="card"><h3 data-i="t_tools_use">Utilisation des outils</h3><div class="chart"><canvas id="c-tools"></canvas></div></div>
+        <div class="card"><h3 data-i="t_langs">Langue des questions</h3><div class="chart"><canvas id="c-langs"></canvas></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="outils">
+    <h2 data-i="h_tools">Les 6 outils de l'assistant</h2>
+    <div class="card"><table>
+      <tr><th data-i="th_tool">Outil</th><th data-i="th_db">Base</th><th data-i="th_role">Rôle</th><th data-i="th_ex">Exemple de question</th></tr>
+      <tr><td><code>rechercher_cible_chembl</code></td><td><span class="tag chembl">ChEMBL</span></td><td data-i="r1">Trouve l'identifiant d'une protéine cible</td><td>EGFR ?</td></tr>
+      <tr><td><code>rechercher_molecule_chembl</code></td><td><span class="tag chembl">ChEMBL</span></td><td data-i="r2">Trouve l'identifiant d'une molécule</td><td>gefitinib ?</td></tr>
+      <tr><td><code>activites_cible</code></td><td><span class="tag chembl">ChEMBL</span></td><td data-i="r3">Molécules les plus puissantes sur une cible (IC50, Ki, Kd…)</td><td data-i="e3">Top 10 des inhibiteurs d'EGFR</td></tr>
+      <tr><td><code>compter_activites</code></td><td><span class="tag chembl">ChEMBL</span></td><td data-i="r4">Nombre de molécules distinctes testées</td><td data-i="e4">Combien de molécules testées sur VEGFR2 ?</td></tr>
+      <tr><td><code>fiche_molecule_pubchem</code></td><td><span class="tag pubchem">PubChem</span></td><td data-i="r5">Formule, poids moléculaire, nom IUPAC, CID</td><td data-i="e5">Formule du géfitinib</td></tr>
+      <tr><td><code>molecule_par_smiles</code></td><td><span class="tag pubchem">PubChem</span></td><td data-i="r6">Recherche par structure SMILES, essais actifs</td><td data-i="e6">Cette molécule est-elle connue ?</td></tr>
+    </table></div>
+  </section>
+
+  <section id="archi">
+    <h2 data-i="h_archi">Architecture</h2>
+    <div class="card">
+      <div class="flow">
+        <div class="step"><b data-i="a1t">Question</b><span data-i="a1d">En français ou en anglais</span></div><div class="arrow">→</div>
+        <div class="step"><b data-i="a2t">Détection de langue</b><span data-i="a2d">Choix du prompt FR ou EN</span></div><div class="arrow">→</div>
+        <div class="step"><b data-i="a3t">Agent LLM</b><span>Groq · gpt-oss-120b</span></div><div class="arrow">→</div>
+        <div class="step"><b data-i="a4t">Appels API</b><span data-i="a4d">ChEMBL et PubChem, avec cache et reprises</span></div><div class="arrow">→</div>
+        <div class="step"><b data-i="a5t">Réponse sourcée</b><span data-i="a5d">Identifiants cités</span></div>
+      </div>
+      <div class="chips" style="margin-top:16px"><span>Python</span><span>LangChain</span><span>Groq</span><span>ChEMBL API</span><span>PubChem PUG-REST</span><span>Chainlit</span><span>SQLite</span></div>
+    </div>
+  </section>
+
+  <footer><span id="maj"></span></footer>
+</main>
+
+<script>
+const T = {
+ fr: {nav_eval:"Évaluation",nav_usage:"Usage",nav_tools:"Outils",nav_archi:"Architecture",nav_proj:"Projet",back:"← Assistant",
+  k_tools:"Précision avec outils",k_alone:"Précision LLM seul",k_gain:"Gain apporté par les outils",k_conv:"Conversations",k_q:"Questions posées",k_lat:"Temps de réponse moyen",live:"en direct",
+  h_eval:"Évaluation : LLM seul vs LLM + outils",t_bar:"Réponses correctes sur 60 énoncés",t_gauge:"Taux de réussite",
+  n_eval:"Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Après correction de la notation, le score attendu avec outils est de 59/60 (à confirmer).",
+  t_issues:"Analyse des erreurs",s_fixed:"Corrigé",s_scoring:"Notation corrigée",s_open:"Ouvert",
+  i1t:"Réponses anglaises sorties en français",i1d:"Prompts séparés par langue et consigne de langue ajoutée à chaque question.",
+  i2t:"Réponse jugée fausse à tort",i2d:"L'assistant donnait le nom EBVACICLIB au lieu de l'identifiant CHEMBL4446357 : la réponse était correcte.",
+  i3t:"Une vraie erreur",i3d:"Le modèle a écrit un nombre de molécules en toutes lettres de façon erronée alors que l'outil donnait le bon chiffre.",
+  t_type:"Résultats par type de question",no_fig:"Ajoutez resultats_par_type.png dans le dossier public/ pour l'afficher ici.",
+  h_usage:"Usage de l'application",no_stats:"Aucune donnée d'usage pour l'instant : posez une question à l'assistant.",
+  t_days:"Questions par jour (14 jours)",t_bases:"Bases interrogées",t_tools_use:"Utilisation des outils",t_langs:"Langue des questions",
+  h_tools:"Les 6 outils de l'assistant",th_tool:"Outil",th_db:"Base",th_role:"Rôle",th_ex:"Exemple de question",
+  r1:"Trouve l'identifiant d'une protéine cible",r2:"Trouve l'identifiant d'une molécule",r3:"Molécules les plus puissantes sur une cible (IC50, Ki, Kd…)",e3:"Top 10 des inhibiteurs d'EGFR",
+  r4:"Nombre de molécules distinctes testées",e4:"Combien de molécules testées sur VEGFR2 ?",r5:"Formule, poids moléculaire, nom IUPAC, CID",e5:"Formule du géfitinib",r6:"Recherche par structure SMILES, essais actifs",e6:"Cette molécule est-elle connue ?",
+  h_archi:"Architecture",a1t:"Question",a1d:"En français ou en anglais",a2t:"Détection de langue",a2d:"Choix du prompt FR ou EN",a3t:"Agent LLM",a4t:"Appels API",a4d:"ChEMBL et PubChem, avec cache et reprises",a5t:"Réponse sourcée",a5d:"Identifiants cités",
+  h_proj:"Projet",p1:"Projet",p2:"Étudiante",p3:"Encadrant",p4:"Co-encadrante",p5:"Livrable scientifique",upd:"Mis à jour",sec:"s",fr:"Français",en:"Anglais",chembl:"ChEMBL",pubchem:"PubChem",q:"Questions"},
+ en: {nav_eval:"Evaluation",nav_usage:"Usage",nav_tools:"Tools",nav_archi:"Architecture",nav_proj:"Project",back:"← Assistant",
+  k_tools:"Accuracy with tools",k_alone:"Accuracy LLM alone",k_gain:"Gain from tools",k_conv:"Conversations",k_q:"Questions asked",k_lat:"Average response time",live:"live",
+  h_eval:"Evaluation: LLM alone vs LLM + tools",t_bar:"Correct answers out of 60 statements",t_gauge:"Success rate",
+  n_eval:"Last full run: 30 questions asked in French and English, references checked against the APIs. After fixing the scoring, the expected score with tools is 59/60 (to be confirmed).",
+  t_issues:"Error analysis",s_fixed:"Fixed",s_scoring:"Scoring fixed",s_open:"Open",
+  i1t:"English answers written in French",i1d:"Separate prompts per language and a language hint added to every question.",
+  i2t:"Answer wrongly marked incorrect",i2d:"The assistant gave the name EBVACICLIB instead of the identifier CHEMBL4446357: the answer was correct.",
+  i3t:"One genuine error",i3d:"The model spelled out a molecule count incorrectly although the tool returned the right number.",
+  t_type:"Results by question type",no_fig:"Put resultats_par_type.png in the public/ folder to show it here.",
+  h_usage:"Application usage",no_stats:"No usage data yet: ask the assistant a question.",
+  t_days:"Questions per day (14 days)",t_bases:"Databases queried",t_tools_use:"Tool usage",t_langs:"Question language",
+  h_tools:"The assistant's 6 tools",th_tool:"Tool",th_db:"Database",th_role:"Role",th_ex:"Example question",
+  r1:"Finds the identifier of a protein target",r2:"Finds the identifier of a molecule",r3:"Most potent molecules on a target (IC50, Ki, Kd…)",e3:"Top 10 EGFR inhibitors",
+  r4:"Number of distinct molecules tested",e4:"How many molecules tested on VEGFR2?",r5:"Formula, molecular weight, IUPAC name, CID",e5:"Gefitinib formula",r6:"Lookup by SMILES structure, active assays",e6:"Is this molecule known?",
+  h_archi:"Architecture",a1t:"Question",a1d:"In French or English",a2t:"Language detection",a2d:"Picks the FR or EN prompt",a3t:"LLM agent",a4t:"API calls",a4d:"ChEMBL and PubChem, with cache and retries",a5t:"Sourced answer",a5d:"Identifiers cited",
+  h_proj:"Project",p1:"Project",p2:"Student",p3:"Supervisor",p4:"Co-supervisor",p5:"Scientific deliverable",upd:"Updated",sec:"s",fr:"French",en:"English",chembl:"ChEMBL",pubchem:"PubChem",q:"Questions"}
+};
+const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+let lang = get("chemask-lang") || ((navigator.language || "fr").startsWith("en") ? "en" : "fr");
+let stats = null;
+
+function themeActuel() {
+  const t = get("vite-ui-theme");  // même clé que l'interface Chainlit : le thème est partagé
+  if (t === "light" || t === "dark") return t;
+  return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+function applyTheme() { document.documentElement.dataset.theme = themeActuel(); }
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(e => { const v = T[lang][e.dataset.i]; if (v !== undefined) e.textContent = v; });
+  document.getElementById("fr").className = lang === "fr" ? "on" : "";
+  document.getElementById("en").className = lang === "en" ? "on" : "";
+  document.getElementById("maj").textContent = stats ? `${T[lang].upd} : ${stats.genere.replace("T", " ")}` : "";
+}
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let charts = [];
+function mk(id, cfg) { charts.push(new Chart(document.getElementById(id), cfg)); }
+
+function draw() {
+  charts.forEach(c => c.destroy()); charts = [];
+  const tx = css("--mut"), grid = css("--grid"), teal = css("--teal"), ind = css("--indigo"), grey = css("--grey");
+  Chart.defaults.color = tx; Chart.defaults.font.family = "system-ui,sans-serif";
+  const axes = { x: { grid: { display: false }, ticks: { color: tx } }, y: { beginAtZero: true, grid: { color: grid }, ticks: { color: tx, precision: 0 } } };
+  const L = T[lang];
+  mk("c-eval", { type: "bar", data: { labels: [L.k_tools, L.k_alone], datasets: [{ data: [58, 25], backgroundColor: [teal, grey], borderRadius: 8, maxBarThickness: 90 }] },
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: axes.x, y: { ...axes.y, max: 60 } } } });
+  mk("c-gauge", { type: "doughnut", data: { labels: [L.k_tools, L.k_alone], datasets: [
+      { data: [96.7, 3.3], backgroundColor: [teal, grid], borderWidth: 0, cutout: "72%" },
+      { data: [41.7, 58.3], backgroundColor: [grey, grid], borderWidth: 0, cutout: "55%" }] },
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } } });
+  if (stats && stats.questions > 0) {
+    document.getElementById("usage-grid").style.display = ""; document.getElementById("no-stats").style.display = "none";
+    mk("c-days", { type: "line", data: { labels: stats.par_jour.map(d => d.jour.slice(5)), datasets: [{ label: L.q, data: stats.par_jour.map(d => d.n), borderColor: teal, backgroundColor: teal + "33", fill: true, tension: .35, pointRadius: 3 }] },
+      options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: axes } });
+    mk("c-bases", { type: "doughnut", data: { labels: ["ChEMBL", "PubChem"], datasets: [{ data: [stats.bases.ChEMBL, stats.bases.PubChem], backgroundColor: [teal, ind], borderWidth: 0 }] },
+      options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } } });
+    const o = Object.entries(stats.outils).sort((a, b) => b[1] - a[1]);
+    mk("c-tools", { type: "bar", data: { labels: o.map(x => x[0]), datasets: [{ data: o.map(x => x[1]), backgroundColor: teal, borderRadius: 6 }] },
+      options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: axes.y, y: { ...axes.x } } } });
+    mk("c-langs", { type: "doughnut", data: { labels: [L.fr, L.en], datasets: [{ data: [stats.langues.fr || 0, stats.langues.en || 0], backgroundColor: [ind, teal], borderWidth: 0 }] },
+      options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } } });
+  } else {
+    document.getElementById("usage-grid").style.display = "none"; document.getElementById("no-stats").style.display = "";
+  }
+}
+function kpis() {
+  if (!stats) return;
+  document.getElementById("k-conv").textContent = stats.conversations;
+  document.getElementById("k-q").textContent = stats.questions;
+  document.getElementById("k-lat").textContent = stats.latence_moyenne_s == null ? "–" : stats.latence_moyenne_s + " " + T[lang].sec;
+}
+function refresh() { applyTheme(); applyLang(); kpis(); draw(); }
+
+document.getElementById("fr").onclick = () => { lang = "fr"; set("chemask-lang", lang); refresh(); };
+document.getElementById("en").onclick = () => { lang = "en"; set("chemask-lang", lang); refresh(); };
+document.getElementById("theme").onclick = () => { set("vite-ui-theme", themeActuel() === "dark" ? "light" : "dark"); refresh(); };
+
+fetch("/public/stats.json?" + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null).then(s => { stats = s; refresh(); });
+refresh();
+</script>
+<script>
+/* ===== Effet « wow » : vidéo de fond, reflet souris, apparition, compteurs ===== */
+(function () {
+  var v = document.createElement("video");
+  v.id = "fond-video"; v.autoplay = true; v.muted = true; v.loop = true; v.playsInline = true;
+  v.src = "/public/fond.mp4?v=3";
+  var voile = document.createElement("div"); voile.id = "fond-voile";
+  v.addEventListener("error", function () { v.remove(); voile.remove(); });
+  var lente = function () { v.playbackRate = 0.5; };
+  v.addEventListener("loadedmetadata", lente); v.addEventListener("play", lente);
+  document.body.insertBefore(voile, document.body.firstChild);
+  document.body.insertBefore(v, document.body.firstChild);
+
+  document.addEventListener("mousemove", function (e) {   // reflet de lumière qui suit la souris
+    var c = e.target.closest && e.target.closest(".card");
+    if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    c.style.setProperty("--my", (e.clientY - r.top) + "px");
+  });
+
+  var io = new IntersectionObserver(function (es) {        // apparition en cascade
+    es.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add("vu"); io.unobserve(en.target); }
+    });
+  }, { threshold: .08 });
+  document.querySelectorAll(".card, .step").forEach(function (el, i) {
+    el.classList.add("rev"); el.style.transitionDelay = ((i % 6) * 70) + "ms"; io.observe(el);
+  });
+
+  function compter(el) {                                   // compteur animé 0 -> valeur
+    var txt = el.textContent.trim(), m = txt.match(/-?\d+(?:[.,]\d+)?/);
+    if (el._busy || !m) return;
+    var cible = parseFloat(m[0].replace(",", ".")), dec = (m[0].split(/[.,]/)[1] || "").length;
+    var avant = txt.slice(0, m.index), apres = txt.slice(m.index + m[0].length);
+    el._busy = true; var t0 = performance.now();
+    (function pas(t) {
+      var k = Math.min(1, (t - t0) / 1200), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = avant + (cible * e).toFixed(dec).replace(".", ",") + apres;
+      if (k < 1) requestAnimationFrame(pas);
+      else { el.textContent = txt; el._fin = txt; el._busy = false; }
+    })(t0);
+  }
+  var kp = document.querySelectorAll(".kpi b");
+  setTimeout(function () { kp.forEach(compter); }, 300);
+  kp.forEach(function (b) {                                // valeurs « en direct » qui arrivent plus tard
+    new MutationObserver(function () {
+      if (!b._busy && b._fin !== undefined && b.textContent !== b._fin) compter(b);
+    }).observe(b, { childList: true, characterData: true, subtree: true });
+  });
+})();
+</script>
+</body>
+</html>
