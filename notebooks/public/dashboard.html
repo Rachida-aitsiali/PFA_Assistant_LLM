@@ -128,9 +128,9 @@
 
 <main>
   <div class="grid kpis">
-    <div class="card kpi"><small data-i="k_tools">Précision avec outils</small><b class="teal">96,7 %</b><span class="sub">58 / 60</span></div>
+    <div class="card kpi"><small data-i="k_tools">Précision avec outils</small><b class="teal">98,3 %</b><span class="sub">59 / 60</span></div>
     <div class="card kpi"><small data-i="k_alone">Précision LLM seul</small><b class="grey">41,7 %</b><span class="sub">25 / 60</span></div>
-    <div class="card kpi"><small data-i="k_gain">Gain apporté par les outils</small><b class="indigo">+55 pts</b><span class="sub">× 2,3</span></div>
+    <div class="card kpi"><small data-i="k_gain">Gain apporté par les outils</small><b class="indigo">+57 pts</b><span class="sub">× 2,4</span></div>
     <div class="card kpi"><small data-i="k_conv">Conversations</small><b id="k-conv">–</b><span class="sub" data-i="live">en direct</span></div>
     <div class="card kpi"><small data-i="k_q">Questions posées</small><b id="k-q">–</b><span class="sub" data-i="live">en direct</span></div>
     <div class="card kpi"><small data-i="k_lat">Temps de réponse moyen</small><b id="k-lat">–</b><span class="sub" data-i="live">en direct</span></div>
@@ -141,7 +141,7 @@
     <div class="grid c2">
       <div class="card"><h3 data-i="t_bar">Réponses correctes sur 60 énoncés</h3>
         <div class="chart"><canvas id="c-eval"></canvas></div>
-        <p class="note" data-i="n_eval">Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Après correction de la notation, le score attendu avec outils est de 59/60 (à confirmer).</p></div>
+        <p class="note" data-i="n_eval">Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Score avec outils après correction de la notation : 59/60.</p></div>
       <div class="card"><h3 data-i="t_gauge">Taux de réussite</h3>
         <div class="chart"><canvas id="c-gauge"></canvas></div></div>
     </div>
@@ -207,7 +207,7 @@ const T = {
  fr: {nav_eval:"Évaluation",nav_usage:"Usage",nav_tools:"Outils",nav_archi:"Architecture",nav_proj:"Projet",back:"← Assistant",
   k_tools:"Précision avec outils",k_alone:"Précision LLM seul",k_gain:"Gain apporté par les outils",k_conv:"Conversations",k_q:"Questions posées",k_lat:"Temps de réponse moyen",live:"en direct",
   h_eval:"Évaluation : LLM seul vs LLM + outils",t_bar:"Réponses correctes sur 60 énoncés",t_gauge:"Taux de réussite",
-  n_eval:"Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Après correction de la notation, le score attendu avec outils est de 59/60 (à confirmer).",
+  n_eval:"Dernier passage complet : 30 questions posées en français et en anglais, références vérifiées par les API. Score avec outils après correction de la notation : 59/60.",
   t_issues:"Analyse des erreurs",s_fixed:"Corrigé",s_scoring:"Notation corrigée",s_open:"Ouvert",
   i1t:"Réponses anglaises sorties en français",i1d:"Prompts séparés par langue et consigne de langue ajoutée à chaque question.",
   i2t:"Réponse jugée fausse à tort",i2d:"L'assistant donnait le nom EBVACICLIB au lieu de l'identifiant CHEMBL4446357 : la réponse était correcte.",
@@ -223,7 +223,7 @@ const T = {
  en: {nav_eval:"Evaluation",nav_usage:"Usage",nav_tools:"Tools",nav_archi:"Architecture",nav_proj:"Project",back:"← Assistant",
   k_tools:"Accuracy with tools",k_alone:"Accuracy LLM alone",k_gain:"Gain from tools",k_conv:"Conversations",k_q:"Questions asked",k_lat:"Average response time",live:"live",
   h_eval:"Evaluation: LLM alone vs LLM + tools",t_bar:"Correct answers out of 60 statements",t_gauge:"Success rate",
-  n_eval:"Last full run: 30 questions asked in French and English, references checked against the APIs. After fixing the scoring, the expected score with tools is 59/60 (to be confirmed).",
+  n_eval:"Last full run: 30 questions asked in French and English, references checked against the APIs. Score with tools after fixing the scoring: 59/60.",
   t_issues:"Error analysis",s_fixed:"Fixed",s_scoring:"Scoring fixed",s_open:"Open",
   i1t:"English answers written in French",i1d:"Separate prompts per language and a language hint added to every question.",
   i2t:"Answer wrongly marked incorrect",i2d:"The assistant gave the name EBVACICLIB instead of the identifier CHEMBL4446357: the answer was correct.",
@@ -265,10 +265,10 @@ function draw() {
   Chart.defaults.color = tx; Chart.defaults.font.family = "system-ui,sans-serif";
   const axes = { x: { grid: { display: false }, ticks: { color: tx } }, y: { beginAtZero: true, grid: { color: grid }, ticks: { color: tx, precision: 0 } } };
   const L = T[lang];
-  mk("c-eval", { type: "bar", data: { labels: [L.k_tools, L.k_alone], datasets: [{ data: [58, 25], backgroundColor: [teal, grey], borderRadius: 8, maxBarThickness: 90 }] },
+  mk("c-eval", { type: "bar", data: { labels: [L.k_tools, L.k_alone], datasets: [{ data: [59, 25], backgroundColor: [teal, grey], borderRadius: 8, maxBarThickness: 90 }] },
     options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: axes.x, y: { ...axes.y, max: 60 } } } });
   mk("c-gauge", { type: "doughnut", data: { labels: [L.k_tools, L.k_alone], datasets: [
-      { data: [96.7, 3.3], backgroundColor: [teal, grid], borderWidth: 0, cutout: "72%" },
+      { data: [98.3, 1.7], backgroundColor: [teal, grid], borderWidth: 0, cutout: "72%" },
       { data: [41.7, 58.3], backgroundColor: [grey, grid], borderWidth: 0, cutout: "55%" }] },
     options: { maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } } });
   if (stats && stats.questions > 0) {
